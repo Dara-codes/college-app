@@ -23,17 +23,15 @@ const TrainingModuleSchema = new mongoose.Schema({
   targetAudience: {
     type: String,
     required: [true, 'Please specify the target audience'],
-    enum: ['student', 'supervisor', 'both']
+    enum: ['doctoral_student', 'supervisor', 'both']
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true // This option adds createdAt and updatedAt fields
 });
 
 module.exports = mongoose.model('TrainingModule', TrainingModuleSchema);

@@ -1,42 +1,39 @@
 const express = require('express');
 const {
-  getUsers,
-  getUser,
+  getAllUsers,
+  getUserById,
   createUser,
   updateUser,
-  deleteUser,
-  approveSupervisor,
-  getUsersByRole
+  disableUser,
+  enableUser,
+  getProfile,
+  getAllStudents,
+  getStudentById
 } = require('../controllers/userController');
+const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
-
-const { protect, authorize } = require('../middleware/auth');
 
 // Protect all routes
 router.use(protect);
 
+// Routes for all authenticated users
+router.get('/profile', getProfile);
+
 // Admin routes
-router.use(authorize('admin'));
-router.route('/')
-  .get(getUsers)
+router.use('/admin', authorize('admin'));
+router.route('/admin/users')
+  .get(getAllUsers)
   .post(createUser);
-
-// Role-based routes
-router.get('/role/:role', getUsersByRole);
-
-// ID-based routes
-router.route('/:id')
-  .get(getUser)
-  .put(updateUser)
-  .delete(deleteUser);
-router.put('/:id/approve-supervisor', approveSupervisor);
+router.route('/admin/users/:id')
+  .get(getUserById)
+  .put(updateUser);
+router.put('/admin/users/:id/disable', disableUser);
+router.put('/admin/users/:id/enable', enableUser);
 
 // Supervisor routes (also accessible by admin)
-router.use(authorize('admin', 'supervisor'));
-router.get('/supervisors', getUsersByRole);
-
-// Student routes (accessible by all roles)
-router.get('/students', getUsersByRole);
+router.use('/supervisor', authorize('admin', 'supervisor'));
+router.get('/supervisor/students', getAllStudents);
+router.get('/supervisor/students/:id', getStudentById);
 
 module.exports = router;

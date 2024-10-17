@@ -1,40 +1,102 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const crypto = require('crypto');
+const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const User = require('../models/User');
+const { validationResult, check } = require('express-validator');
+const passwordUtils = require('../utils/PasswordUtils');
+const { verifyPassword, sendTokenResponse } = require('../utils/authUtils');
+const sendEmail = require('../utils/sendEmail');
+const Supervisor = require('../models/Supervisor');
+const DoctoralStudent = require('../models/DoctoralStudent');
+
+// Define valid roles
+const VALID_ROLES = ['admin', 'supervisor', 'doctoral_student'];
+
+// Validation middleware
+exports.validateRegister = [
+  check('firstName').notEmpty().withMessage('First name is required'),
+  check('lastName').notEmpty().withMessage('Last name is required'),
+  check('email').isEmail().withMessage('Please provide a valid email address'),
+  check('password')
+    .isLength({ min: 7 })
+    .withMessage('Password must be at least 7 characters long'),
+  check('role')
+    .optional()
+    .isIn(VALID_ROLES)
+    .withMessage('Role must be either ADMIN, SUPERVISOR or DOCTORAL_STUDENT'),
+];
+
+
+
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
 // @access  Public
 exports.register = asyncHandler(async (req, res, next) => {
-  const { firstName, lastName, email, password, role } = req.body;
-
-  // Check if user already exists
-  let user = await User.findOne({ email });
-
-  if (user) {
-    return next(new ErrorResponse('User already exists with this email', 400));
+  // Check for validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
 
+  const { firstName, lastName, email, password, role, ...additionalInfo } = req.body;
+
   // Hash password
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
+  const hashedPassword = await passwordUtils.hashUserPassword(password);
+
+  // Check if this is the first admin being created
+  const adminCount = await User.countDocuments({ role: 'admin' });
+  
+  if (role === 'admin' && adminCount > 0) {
+    return next(new ErrorResponse('Admin already exists', 400));
+  }
+
+  // Set role (default to doctoral_student if not specified or if an invalid role is provided)
+  const userRole = VALID_ROLES.includes(role) ? role : 'doctoral_student';
 
   // Create user
-  user = new User({
+  const user = await User.create({
     firstName,
     lastName,
     email,
     password: hashedPassword,
-    role
+    role: userRole
   });
 
-  await user.save();
+  // Create role-specific document
+  if (userRole === 'supervisor') {
+    await Supervisor.create({
+      user: user._id,
+      email: user.email,
+      department: additionalInfo.department,
+      specialization: additionalInfo.specialization,
+      yearsOfExperience: additionalInfo.yearsOfExperience
+    });
+  } else if (userRole === 'doctoral_student') {
+    await DoctoralStudent.create({
+      user: user._id,
+      email: user.email,
+      researchTopic: additionalInfo.researchTopic,
+      supervisor: additionalInfo.supervisor,
+      startDate: additionalInfo.startDate,
+      expectedCompletionDate: additionalInfo.expectedCompletionDate
+    });
+  }
 
-  sendTokenResponse(user, 200, res);
+  // Send response without token
+  res.status(201).json({
+    success: true,
+    message: 'User registered successfully',
+    data: {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role
+    }
+  });
 });
+
 
 // @desc    Login user
 // @route   POST /api/v1/auth/login
@@ -55,7 +117,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   // Check if password matches
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await verifyPassword(password, user.password);
 
   if (!isMatch) {
     return next(new ErrorResponse('Invalid credentials', 401));
@@ -95,20 +157,22 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/auth/updatedetails
 // @access  Private
 exports.updateDetails = asyncHandler(async (req, res, next) => {
-  const fieldsToUpdate = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email
-  };
+  const { firstName, lastName, email } = req.body;
 
-  const user = await User.findById(req.user.id);
-
-  if (!user) {
-    return next(new ErrorResponse('User not found', 404));
+  if (!firstName || !lastName || !email) {
+    return next(new ErrorResponse('Please provide values for all fields', 400));
   }
 
-  Object.assign(user, fieldsToUpdate);
-  await user.save();
+  const fieldsToUpdate = {
+    firstName,
+    lastName,
+    email
+  };
+
+  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+    new: true,
+    runValidators: true
+  });
 
   res.status(200).json({
     success: true,
@@ -123,73 +187,150 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).select('+password');
 
   // Check current password
-  const isMatch = await bcrypt.compare(req.body.currentPassword, user.password);
+  const isMatch = await verifyPassword(req.body.currentPassword, user.password);
   if (!isMatch) {
     return next(new ErrorResponse('Password is incorrect', 401));
   }
 
   // Hash new password
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(req.body.newPassword, salt);
+  user.password = await passwordUtils.hashUserPassword(req.body.newPassword);
   await user.save();
 
   sendTokenResponse(user, 200, res);
 });
 
-// Get token from model, create cookie and send response
-const sendTokenResponse = (user, statusCode, res) => {
-  // Create token
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE
+// Validation middleware for admin creation
+exports.validateAdminCreation = [
+  check('firstName').notEmpty().withMessage('First name is required'),
+  check('lastName').notEmpty().withMessage('Last name is required'),
+  check('email').isEmail().withMessage('Please provide a valid email address'),
+  check('password')
+    .isLength({ min: 7 })
+    .withMessage('Password must be at least 7 characters long'),
+];
+
+// @desc    Create admin user
+// @route   POST /api/v1/auth/create-admin
+// @access  Private/Admin
+exports.createAdmin = asyncHandler(async (req, res, next) => {
+  // Check for validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { firstName, lastName, email, password } = req.body;
+
+  // Check if admin already exists
+  const adminCount = await User.countDocuments({ role: 'admin' });
+  if (adminCount > 0) {
+    return next(new ErrorResponse('Admin already exists', 400));
+  }
+
+  // Hash password
+  const hashedPassword = await passwordUtils.hashUserPassword(password);
+
+  // Create admin user
+  const user = await User.create({
+    firstName,
+    lastName,
+    email,
+    password: hashedPassword,
+    role: 'admin'
   });
 
-  // Validate JWT_COOKIE_EXPIRE
-  const jwtCookieExpire = parseInt(process.env.JWT_COOKIE_EXPIRE, 10);
-  if (isNaN(jwtCookieExpire)) {
-    throw new Error('JWT_COOKIE_EXPIRE environment variable is not set correctly');
+  res.status(201).json({
+    success: true,
+    data: {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role
+    }
+  });
+});
+
+// @desc    Forgot password
+// @route   POST /api/v1/auth/forgotpassword
+// @access  Public
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(new ErrorResponse('There is no user with that email', 404));
   }
 
-  const options = {
-    expires: new Date(Date.now() + jwtCookieExpire * 24 * 60 * 60 * 1000), // Convert days to milliseconds
-    httpOnly: true
-  };
+  // Get reset token
+  const resetToken = crypto.randomBytes(20).toString('hex');
 
-  if (process.env.NODE_ENV === 'production') {
-    options.secure = true; // Send cookie only over HTTPS
-  }
+  // Hash token and set to resetPasswordToken field
+  user.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
 
-  res
-    .status(statusCode)
-    .cookie('token', token, options)
-    .json({
-      success: true,
-      token
+  // Set expire
+  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  await user.save({ validateBeforeSave: false });
+
+  // Create reset url
+  const resetUrl = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/auth/resetpassword/${resetToken}`;
+
+  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Password reset token',
+      message
     });
-};
+
+    res.status(200).json({ success: true, data: 'Email sent' });
+  } catch (err) {
+    console.log(err);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorResponse('Email could not be sent', 500));
+  }
+});
+
+// @desc    Reset password
+// @route   PUT /api/v1/auth/resetpassword/:resettoken
+// @access  Public
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  // Get hashed token
+  const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(req.params.resettoken)
+    .digest('hex');
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    return next(new ErrorResponse('Invalid token', 400));
+  }
+
+  // Set new password
+  user.password = await passwordUtils.hashUserPassword(req.body.password);
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+
+  sendTokenResponse(user, 200, res);
+});
+
+module.exports = exports;
 
 
-// const sendTokenResponse = (user, statusCode, res) => {
-//   // Create token
-//   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-//     expiresIn: process.env.JWT_EXPIRE
-//   });
 
-//   const options = {
-//     expires: new Date(
-//       Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-//     ),
-//     httpOnly: true
-//   };
 
-//   if (process.env.NODE_ENV === 'production') {
-//     options.secure = true;
-//   }
-
-//   res
-//     .status(statusCode)
-//     .cookie('token', token, options)
-//     .json({
-//       success: true,
-//       token
-//     });
-// };
