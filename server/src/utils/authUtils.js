@@ -1,6 +1,13 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// Define and export VALID_ROLES
+const VALID_ROLES = {
+  ADMIN: 'admin',
+  SUPERVISOR: 'supervisor',
+  DOCTORAL_STUDENT: 'doctoral_student'
+};
+
 async function verifyPassword(inputPassword, storedPassword) {
   return await bcrypt.compare(inputPassword, storedPassword);
 }
@@ -43,6 +50,7 @@ function sendTokenResponse(user, statusCode, res) {
 }
 
 module.exports = {
+  VALID_ROLES,
   verifyPassword,
   generateToken,
   sendTokenResponse

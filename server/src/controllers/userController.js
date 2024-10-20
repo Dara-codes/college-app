@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
+const { VALID_ROLES } = require('../utils/authUtils');
+const { validationResult, check } = require('express-validator');
 
 // @desc    Get logged in user's profile
 // @route   GET /api/v1/users/profile
@@ -38,41 +40,23 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
 exports.createUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, role } = req.body;
 
-  // Check if this is the first admin being created
-  const adminCount = await User.countDocuments({ role: 'admin' });
-  
-  if (adminCount === 0 && role === 'admin') {
-    // This is the first admin, allow creation without authorization
-    const user = await User.create({
-      firstName,
-      lastName,
-      email,
-      password,
-      role: 'admin'
-    });
-
-    res.status(201).json({
-      success: true,
-      data: user
-    });
-  } else if (role === 'admin' && (!req.user || req.user.role !== 'admin')) {
-    // If trying to create an admin and the requester is not an admin
-    return next(new ErrorResponse('Not authorized to create admin accounts', 403));
-  } else {
-    // For all other cases, proceed with normal user creation
-    const user = await User.create({
-      firstName,
-      lastName,
-      email,
-      password,
-      role
-    });
-
-    res.status(201).json({
-      success: true,
-      data: user
-    });
+  // Ensure only non-admin roles can be created through this route
+  if (role === VALID_ROLES.ADMIN) {
+    return next(new ErrorResponse('Admin users cannot be created through this route', 403));
   }
+
+  const user = await User.create({
+    firstName,
+    lastName,
+    email,
+    password,
+    role: role || VALID_ROLES.DOCTORAL_STUDENT // Default to doctoral_student if no role provided
+  });
+
+  res.status(201).json({
+    success: true,
+    data: user
+  });
 });
 
 // @desc    Update user
@@ -141,7 +125,7 @@ exports.enableUser = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/users/supervisor/students
 // @access  Private (Admin and Supervisor)
 exports.getAllStudents = asyncHandler(async (req, res, next) => {
-  const students = await User.find({ role: 'student', isActive: true });
+  const students = await User.find({ role: VALID_ROLES.DOCTORAL_STUDENT, isActive: true });
   res.status(200).json({ success: true, data: students });
 });
 
@@ -149,12 +133,49 @@ exports.getAllStudents = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/users/supervisor/students/:id
 // @access  Private (Admin and Supervisor)
 exports.getStudentById = asyncHandler(async (req, res, next) => {
-  const student = await User.findOne({ _id: req.params.id, role: 'student', isActive: true });
+  const student = await User.findOne({ _id: req.params.id, role: VALID_ROLES.DOCTORAL_STUDENT, isActive: true });
   if (!student) {
     return next(new ErrorResponse(`Student not found with id of ${req.params.id}`, 404));
   }
   res.status(200).json({ success: true, data: student });
 });
+
+
+// @desc    Update user details
+// @route   PUT /api/v1/users/updatedetails
+// @access  Private
+exports.updateDetails = asyncHandler(async (req, res, next) => {
+  const { firstName, lastName, email } = req.body;
+
+  // Validate input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const fieldsToUpdate = {
+    firstName,
+    lastName,
+    email
+  };
+
+  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+    new: true,
+    runValidators: true
+  });
+
+  res.status(200).json({
+    success: true,
+    data: user
+  });
+});
+
+// Validation middleware for updateDetails
+exports.validateUpdateDetails = [
+  check('firstName').notEmpty().withMessage('First name is required'),
+  check('lastName').notEmpty().withMessage('Last name is required'),
+  check('email').isEmail().withMessage('Please provide a valid email address'),
+];
 
 module.exports = exports;
 

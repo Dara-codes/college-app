@@ -1,28 +1,28 @@
 const express = require('express');
 const {
-  register,
   login,
   logout,
   getMe,
-  updateDetails,
   updatePassword,
-  createAdmin,
-  validateRegister,
-  validateAdminCreation
+  forgotPassword,
+  resetPassword,
+  registerStudent,
+  registerSupervisor,
+  validateStudentRegister,
+  validateSupervisorRegister
 } = require('../controllers/authControllers');
 
 const router = express.Router();
 
-const { protect, authorize } = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 
-router.post('/register', validateRegister, register);
+router.post('/register/student', validateStudentRegister, registerStudent);
+router.post('/register/supervisor', validateSupervisorRegister, registerSupervisor);
 router.post('/login', login);
 router.get('/logout', logout);
 router.get('/me', protect, getMe);
-router.put('/updatedetails', protect, updateDetails);
 router.put('/updatepassword', protect, updatePassword);
-
-// Admin-only route for creating new admin users
-router.post('/create-admin', protect, authorize('admin'), validateAdminCreation, createAdmin);
+router.post('/forgotpassword', forgotPassword);
+router.put('/resetpassword/:resettoken', resetPassword);
 
 module.exports = router;

@@ -4,55 +4,53 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const { validationResult, check } = require('express-validator');
 const passwordUtils = require('../utils/PasswordUtils');
-const { verifyPassword, sendTokenResponse } = require('../utils/authUtils');
+const { verifyPassword, sendTokenResponse, VALID_ROLES } = require('../utils/authUtils');
 const sendEmail = require('../utils/sendEmail');
 const Supervisor = require('../models/Supervisor');
 const DoctoralStudent = require('../models/DoctoralStudent');
 
-// Define valid roles
-const VALID_ROLES = ['admin', 'supervisor', 'doctoral_student'];
 
-// Validation middleware
-exports.validateRegister = [
+
+// Validation middleware for doctoral student registration
+exports.validateStudentRegister = [
   check('firstName').notEmpty().withMessage('First name is required'),
   check('lastName').notEmpty().withMessage('Last name is required'),
   check('email').isEmail().withMessage('Please provide a valid email address'),
   check('password')
     .isLength({ min: 7 })
     .withMessage('Password must be at least 7 characters long'),
-  check('role')
-    .optional()
-    .isIn(VALID_ROLES)
-    .withMessage('Role must be either ADMIN, SUPERVISOR or DOCTORAL_STUDENT'),
+  check('researchTopic').notEmpty().withMessage('Research topic is required'),
+  check('startDate').notEmpty().withMessage('Start date is required'),
+  check('expectedCompletionDate').notEmpty().withMessage('Expected completion date is required'),
 ];
 
+// Validation middleware for supervisor registration
+exports.validateSupervisorRegister = [
+  check('firstName').notEmpty().withMessage('First name is required'),
+  check('lastName').notEmpty().withMessage('Last name is required'),
+  check('email').isEmail().withMessage('Please provide a valid email address'),
+  check('password')
+    .isLength({ min: 7 })
+    .withMessage('Password must be at least 7 characters long'),
+  check('department').notEmpty().withMessage('Department is required'),
+  check('specialization').notEmpty().withMessage('Specialization is required'),
+  check('yearsOfExperience').isNumeric().withMessage('Years of experience must be a number'),
+];
 
-
-
-// @desc    Register user
-// @route   POST /api/v1/auth/register
+// @desc    Register doctoral student
+// @route   POST /api/v1/auth/register/student
 // @access  Public
-exports.register = asyncHandler(async (req, res, next) => {
+exports.registerStudent = asyncHandler(async (req, res, next) => {
   // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { firstName, lastName, email, password, role, ...additionalInfo } = req.body;
+  const { firstName, lastName, email, password, researchTopic, startDate, expectedCompletionDate } = req.body;
 
   // Hash password
   const hashedPassword = await passwordUtils.hashUserPassword(password);
-
-  // Check if this is the first admin being created
-  const adminCount = await User.countDocuments({ role: 'admin' });
-  
-  if (role === 'admin' && adminCount > 0) {
-    return next(new ErrorResponse('Admin already exists', 400));
-  }
-
-  // Set role (default to doctoral_student if not specified or if an invalid role is provided)
-  const userRole = VALID_ROLES.includes(role) ? role : 'doctoral_student';
 
   // Create user
   const user = await User.create({
@@ -60,33 +58,69 @@ exports.register = asyncHandler(async (req, res, next) => {
     lastName,
     email,
     password: hashedPassword,
-    role: userRole
+    role: VALID_ROLES.DOCTORAL_STUDENT
   });
 
-  // Create role-specific document
-  if (userRole === 'supervisor') {
-    await Supervisor.create({
-      user: user._id,
-      email: user.email,
-      department: additionalInfo.department,
-      specialization: additionalInfo.specialization,
-      yearsOfExperience: additionalInfo.yearsOfExperience
-    });
-  } else if (userRole === 'doctoral_student') {
-    await DoctoralStudent.create({
-      user: user._id,
-      email: user.email,
-      researchTopic: additionalInfo.researchTopic,
-      supervisor: additionalInfo.supervisor,
-      startDate: additionalInfo.startDate,
-      expectedCompletionDate: additionalInfo.expectedCompletionDate
-    });
-  }
+  // Create doctoral student document
+  await DoctoralStudent.create({
+    user: user._id,
+    email: user.email,
+    researchTopic,
+    startDate,
+    expectedCompletionDate
+  });
 
   // Send response without token
   res.status(201).json({
     success: true,
-    message: 'User registered successfully',
+    message: 'Doctoral student registered successfully',
+    data: {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role
+    }
+  });
+});
+
+// @desc    Register supervisor
+// @route   POST /api/v1/auth/register/supervisor
+// @access  Public
+exports.registerSupervisor = asyncHandler(async (req, res, next) => {
+  // Check for validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { firstName, lastName, email, password, department, specialization, yearsOfExperience } = req.body;
+
+  // Hash password
+  const hashedPassword = await passwordUtils.hashUserPassword(password);
+
+  // Create user
+  const user = await User.create({
+    firstName,
+    lastName,
+    email,
+    password: hashedPassword,
+    role: VALID_ROLES.SUPERVISOR
+  });
+
+  // Create supervisor document
+  await Supervisor.create({
+    user: user._id,
+    email: user.email,
+    department,
+    specialization,
+    yearsOfExperience
+  });
+
+  // Send response without token
+  res.status(201).json({
+    success: true,
+    message: 'Supervisor registered successfully',
     data: {
       id: user._id,
       firstName: user.firstName,
@@ -153,33 +187,6 @@ exports.getMe = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Update user details
-// @route   PUT /api/v1/auth/updatedetails
-// @access  Private
-exports.updateDetails = asyncHandler(async (req, res, next) => {
-  const { firstName, lastName, email } = req.body;
-
-  if (!firstName || !lastName || !email) {
-    return next(new ErrorResponse('Please provide values for all fields', 400));
-  }
-
-  const fieldsToUpdate = {
-    firstName,
-    lastName,
-    email
-  };
-
-  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
-    new: true,
-    runValidators: true
-  });
-
-  res.status(200).json({
-    success: true,
-    data: user
-  });
-});
-
 // @desc    Update password
 // @route   PUT /api/v1/auth/updatepassword
 // @access  Private
@@ -199,57 +206,6 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   sendTokenResponse(user, 200, res);
 });
 
-// Validation middleware for admin creation
-exports.validateAdminCreation = [
-  check('firstName').notEmpty().withMessage('First name is required'),
-  check('lastName').notEmpty().withMessage('Last name is required'),
-  check('email').isEmail().withMessage('Please provide a valid email address'),
-  check('password')
-    .isLength({ min: 7 })
-    .withMessage('Password must be at least 7 characters long'),
-];
-
-// @desc    Create admin user
-// @route   POST /api/v1/auth/create-admin
-// @access  Private/Admin
-exports.createAdmin = asyncHandler(async (req, res, next) => {
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { firstName, lastName, email, password } = req.body;
-
-  // Check if admin already exists
-  const adminCount = await User.countDocuments({ role: 'admin' });
-  if (adminCount > 0) {
-    return next(new ErrorResponse('Admin already exists', 400));
-  }
-
-  // Hash password
-  const hashedPassword = await passwordUtils.hashUserPassword(password);
-
-  // Create admin user
-  const user = await User.create({
-    firstName,
-    lastName,
-    email,
-    password: hashedPassword,
-    role: 'admin'
-  });
-
-  res.status(201).json({
-    success: true,
-    data: {
-      id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role
-    }
-  });
-});
 
 // @desc    Forgot password
 // @route   POST /api/v1/auth/forgotpassword
