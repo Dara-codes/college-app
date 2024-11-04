@@ -1,7 +1,19 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
+import SetMilestoneForm from "../../../components/onboarding/student/SetMilestone";
+import OnboardingLayout from "../../../components/onboarding/OnboardingLayout";
 
-const SetMilestone = () => {
-  return <div>SetMilestone</div>;
+const SetMilestonePage = () => {
+  const navigate = useNavigate();
+
+  const handleSkip = () => {
+    navigate("/onboarding/student/research");
+  };
+
+  return (
+    <OnboardingLayout currentStep={3} onSkip={handleSkip}>
+      <SetMilestoneForm />
+    </OnboardingLayout>
+  );
 };
 
-export default SetMilestone;
+export default SetMilestonePage;

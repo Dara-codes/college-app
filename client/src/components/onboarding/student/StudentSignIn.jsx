@@ -21,15 +21,9 @@ const StudentSignIn = () => {
     "University of Lagos",
     "University of Ibadan",
     "Covenant University",
-    // Add more universities
   ];
 
-  const departments = [
-    "Computer Science",
-    "Engineering",
-    "Mathematics",
-    // Add more departments
-  ];
+  const departments = ["Computer Science", "Engineering", "Mathematics"];
 
   const onSubmit = (data) => {
     console.log(data);
@@ -46,7 +40,6 @@ const StudentSignIn = () => {
   return (
     <div className="w-full max-w-md">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* User Type - Readonly/Disabled */}
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-1.5">
             User type

@@ -12,10 +12,12 @@ import SelectUserType from "./pages/onboarding/SelectUserType";
 import RegisterLayout from "./components/auth/register/RegisterLayout";
 import Register from "./pages/auth/register/Register";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
     <AuthProvider>
+      <Toaster />
       <BrowserRouter>
         <Routes>
           {/* Public Routes */}

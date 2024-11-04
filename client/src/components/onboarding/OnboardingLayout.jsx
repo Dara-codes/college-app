@@ -1,15 +1,26 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import graduateImg from "../../assets/images/auth/student-group.png";
 import logoImg from "../../assets/images/cta/students.jpg";
 
-const OnboardingLayout = ({ children, currentStep = 1 }) => {
+const OnboardingLayout = ({ children, currentStep = 1, onSkip }) => {
+  const navigate = useNavigate();
+
+  const handleSkip = () => {
+    if (onSkip) {
+      onSkip();
+    }
+    navigate("/onboarding/student/milestone");
+  };
+
+  // Calculate progress percentage
+  const progressWidth = `${(currentStep / 4) * 100}%`;
+
   return (
     <div className="min-h-screen">
       {/* Desktop Layout */}
       <div className="hidden md:flex min-h-screen">
         {/* Left Section with Image */}
         <div className="w-1/2 relative bg-[#0B4C77]">
-          {/* Logo positioned at top-left of image section */}
           <div className="absolute top-6 left-12 z-20">
             <img
               src={logoImg}
@@ -33,21 +44,23 @@ const OnboardingLayout = ({ children, currentStep = 1 }) => {
 
         {/* Right Section */}
         <div className="w-1/2 bg-white p-12 flex flex-col">
-          {/* Skip button at top-right */}
           <div className="self-end">
-            <button className="text-[#0B4C77] hover:text-blue-700">Skip</button>
+            <button
+              onClick={handleSkip}
+              className="text-[#0B4C77] hover:text-blue-700"
+            >
+              Skip
+            </button>
           </div>
 
-          {/* Progress bar at top */}
           <div className="w-full h-1 bg-[#E5E7EB] rounded-full overflow-hidden mb-8">
             <div
               className="h-full bg-[#0B4C77] transition-all duration-300 rounded-full"
-              style={{ width: `${(currentStep / 4) * 100}%` }}
+              style={{ width: progressWidth }}
             />
           </div>
 
-          {/* Main Content */}
-          {children || <Outlet />}
+          <div className="flex-1">{children || <Outlet />}</div>
         </div>
       </div>
 
@@ -61,6 +74,12 @@ const OnboardingLayout = ({ children, currentStep = 1 }) => {
             className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-[#0B4C77]/50" />
+          <button
+            onClick={handleSkip}
+            className="absolute top-4 right-4 text-white hover:text-white/80 text-sm z-10"
+          >
+            Skip
+          </button>
           <h1 className="absolute bottom-5 left-5 right-5 text-2xl font-bold text-white">
             Thank you for joining us and Welcome to (Project Design)
           </h1>
@@ -68,7 +87,7 @@ const OnboardingLayout = ({ children, currentStep = 1 }) => {
 
         {/* Form Container */}
         <div className="flex-1 bg-white px-5">
-          <div className="flex flex-col items-start gap-5">
+          <div className="flex flex-col items-center gap-5">
             {/* Logo */}
             <div className="mt-5">
               <img
@@ -78,16 +97,16 @@ const OnboardingLayout = ({ children, currentStep = 1 }) => {
               />
             </div>
 
-            {/* Progress Bar */}
+            {/* Progress Bar - Using same progress width as desktop */}
             <div className="w-full h-1 bg-[#E5E7EB] rounded-full overflow-hidden">
               <div
                 className="h-full bg-[#0B4C77] transition-all duration-300 rounded-full"
-                style={{ width: `${(currentStep / 4) * 100}%` }}
+                style={{ width: progressWidth }}
               />
             </div>
 
             {/* Main Content */}
-            {children || <Outlet />}
+            <div className="w-full">{children || <Outlet />}</div>
           </div>
         </div>
       </div>
