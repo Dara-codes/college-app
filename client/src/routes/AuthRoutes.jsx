@@ -2,9 +2,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginLayout from "../components/auth/login/LoginLayout";
 import RegisterLayout from "../components/auth/register/RegisterLayout";
 import GeneralRegister from "../pages/auth/register/Register";
-import StudentLogin from "../pages/auth/login/StudentLogin";
-import SupervisorLogin from "../pages/auth/login/SupervisorLogin";
 import Login from "../pages/auth/login/Login";
+import ForgotPasswordPage from "../pages/auth/forgot-password/ForgotPassword";
+import CheckEmailPage from "../pages/auth/forgot-password/CheckEmail";
+import ResetPasswordPage from "../pages/auth/forgot-password/ResetPassword";
+import ResetSuccessPage from "../pages/auth/forgot-password/ResetSuccess";
 
 const AuthRoutes = () => {
   return (
@@ -18,6 +20,10 @@ const AuthRoutes = () => {
       <Route path="login" element={<LoginLayout />}>
         <Route index element={<Login />} />
       </Route>
+      <Route path="forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="check-email" element={<CheckEmailPage />} />
+      <Route path="reset-password" element={<ResetPasswordPage />} />
+      <Route path="reset-success" element={<ResetSuccessPage />} />
     </Routes>
   );
 };

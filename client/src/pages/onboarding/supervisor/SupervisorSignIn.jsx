@@ -1,7 +1,12 @@
-import React from "react";
+import SupervisorLayout from "../../../components/onboarding/supervisor/SupervisorLayout";
+import SupervisorSigninForm from "../../../components/onboarding/supervisor/SupervisorSignIn";
 
 const SupervisorSignIn = () => {
-  return <div>SupervisorSignIn</div>;
+  return (
+    <SupervisorLayout currentStep={1}>
+      <SupervisorSigninForm />
+    </SupervisorLayout>
+  );
 };
 
 export default SupervisorSignIn;
