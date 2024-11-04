@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import Home from "./pages/Home";
+import AuthRoutes from "./routes/AuthRoutes";
+import OnboardingRoutes from "./routes/OnboardingRoutes";
+import DashboardRoutes from "./routes/DashboardRoutes";
+import StudentDashboardRoutes from "./routes/StudentDashboardRoutes";
+import SupervisorDashboardRoutes from "./routes/SupervisorDashboardRoutes";
+import UnauthorizedPage from "./pages/UnauthorizedPage";
+import { AuthProvider } from "./context/AuthContext";
+import SelectUserType from "./pages/onboarding/SelectUserType";
+import RegisterLayout from "./components/auth/register/RegisterLayout";
+import Register from "./pages/auth/register/Register";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/auth/*" element={<AuthRoutes />} />
+
+          {/* Auth Routes */}
+          <Route path="/auth" element={<RegisterLayout currentStep={1} />}>
+            <Route path="register" element={<Register />} />
+          </Route>
+
+          {/* Onboarding Routes */}
+          <Route
+            path="/onboarding"
+            element={<RegisterLayout currentStep={2} />}
+          >
+            <Route path="select-type" element={<SelectUserType />} />
+          </Route>
+          <Route path="/*" element={<ProtectedRoutes />} />
+          {/* Catch-all Unauthorized Route */}
+          <Route path="/unauthorized" element={<UnauthorizedPage />} />
+          <Route path="/onboarding/*" element={<OnboardingRoutes />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
-}
+};
 
 export default App;
