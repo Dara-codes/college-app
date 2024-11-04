@@ -1,0 +1,156 @@
+/* src/styles/hero.css */
+/* .hero-container {
+  padding: 149px 20px 0 20px;
+  background-color: #2b6cb0;
+}
+
+.image-container {
+  position: relative;
+  width: 540.71px;
+  height: 643.62px;
+  border-radius: 20px;
+}
+
+/* Mobile specific styles */
+/* @media (max-width: 768px) {
+  .hero-container {
+    padding-top: 20px;
+  }
+
+  .image-container {
+    width: 320px;
+    height: 380px;
+  }
+} */
+
+/* src/styles/hero.css */
+.hero-section {
+  width: 100%;
+  min-height: 100vh;
+  background: #296c98;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .hero-section {
+    width: 1512px;
+    height: 896px;
+  }
+}
+
+.hero-container {
+  padding: 32px 20px;
+}
+
+@media (min-width: 768px) {
+  .hero-container {
+    padding-top: 149px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 47px;
+}
+
+@media (min-width: 768px) {
+  .content-wrapper {
+    flex-direction: row;
+    gap: 0;
+    max-width: 1512px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+}
+
+.text-content {
+  width: 100%;
+  max-width: 309px;
+  padding: 32px 0;
+}
+
+@media (min-width: 768px) {
+  .text-content {
+    width: 907px;
+    max-width: none;
+    padding: 0;
+  }
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  background: #f6ad37;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.cta-button:hover {
+  background: #e5932c;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 375px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .image-wrapper {
+    position: absolute;
+    right: 0;
+    width: 540.711px;
+    height: 643.621px;
+    margin: 0;
+    left: 907px;
+  }
+}
+
+.blob-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.student-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  clip-path: url(#blobClip);
+}
+
+.student-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stripe-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.1) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+.features-glimpse {
+  text-align: center;
+  margin-top: 64px;
+}

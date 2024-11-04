@@ -1,0 +1,17 @@
+/* Image transition */
+.image-fade {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+  .auth-mobile-container {
+    width: 375px;
+    padding-bottom: 26px;
+  }
+}
+
+/* Smooth transitions */
+.auth-transition {
+  transition: all 0.3s ease-in-out;
+}
