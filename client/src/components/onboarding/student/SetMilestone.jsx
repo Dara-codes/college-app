@@ -17,8 +17,10 @@ const SetMilestone = () => {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <h2 className="text-[#0B4C77] text-2xl font-semibold mb-4">Milestone</h2>
-      <p className="text-gray-600 mb-8">
+      <h2 className="text-[#0B4C77] text-[27px] leading-custom-line-height font-semibold mb-4">
+        Milestone
+      </h2>
+      <p className="font-inter text-custom-size font-medium leading-custom-line-height mb-[24px]">
         Finish your Thesis faster with our help
       </p>
 

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -38,9 +37,12 @@ const StudentSignIn = () => {
     "w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0B4C77] appearance-none bg-white";
 
   return (
-    <div className="w-full max-w-md">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div>
+    <div className="w-full mx-auto max-w-md">
+      <h2 className="text-[#0B4C77] text-[27px] leading-custom-line-height font-semibold mb-4">
+        Sign up
+      </h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto space-y-6">
+        <div className="">
           <label className="block text-gray-700 text-sm font-medium mb-1.5">
             User type
           </label>

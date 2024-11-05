@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail } from "lucide-react";
 import { toast } from "react-hot-toast";
-import logoImg from "../../../assets/images/student.png";
+// import logoImg from "../../../assets/images/student.png";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -28,11 +28,11 @@ const ForgotPassword = () => {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <div className="w-[100px] h-[40px] bg-[#D9D9D9] rounded">
-            <img
+            {/* <img
               src={logoImg}
               alt="Logo"
               className="w-full h-full object-contain"
-            />
+            /> */}
           </div>
         </div>
 
