@@ -1,20 +1,31 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
+import { toast } from "react-hot-toast";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate()
 
+  const { loginUser } = useAuth()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // Handle login logic
+  const onSubmit = async (data) => {
+    try {
+      await loginUser(data.email, data.password);
+      navigate('/')
+    } catch (err) {
+      console.error("Login failed:", err);
+      const errorMsg = err?.response?.data?.error || 'An unexpected error occurred during login'
+      toast.error(errorMsg)
+    }
+    
   };
 
   return (

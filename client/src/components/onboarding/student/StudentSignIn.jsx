@@ -8,6 +8,7 @@ import {
   Link as LinkIcon,
   ChevronDown,
 } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
 
 const StudentSignIn = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const StudentSignIn = () => {
     formState: { errors },
   } = useForm();
 
+  const { registerDoctoralStudent } = useAuth()
+
   const universities = [
     "University of Lagos",
     "University of Ibadan",
@@ -25,9 +28,15 @@ const StudentSignIn = () => {
 
   const departments = ["Computer Science", "Engineering", "Mathematics"];
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
-    navigate("/onboarding/student/profile");
+    try {
+      await registerDoctoralStudent(data)
+      navigate("/onboarding/student/profile");
+    } catch (err) {
+
+    }
+    
   };
 
   const handleSkip = () => {

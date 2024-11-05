@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import axios from '../utils/axiosConfig'
+import { USER_TOKEN_KEY } from "../utils/constants";
 
 const AuthContext = createContext(null);
 
@@ -82,9 +84,37 @@ export const AuthProvider = ({ children }) => {
     }));
   };
 
+
+  const loginUser = async (email, password) => {
+    try {
+      const response = await axios.post("/auth/login", { email, password });
+      const { token, user } = response.data;
+      localStorage.setItem(USER_TOKEN_KEY, token);
+      setUser(user);
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error; 
+    }
+  };
+
+  const registerDoctoralStudent = async (universityDetails) => {
+    try {
+      const userToRegister = {
+        ...registrationData,
+        ...universityDetails
+      }
+      setRegistrationData(userToRegister)
+      const response = await axios.post("/auth/register/student", userToRegister);
+      console.log('response oo ', response) 
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error; 
+    }
+  };
+
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("token");
+    localStorage.removeItem(USER_TOKEN_KEY);
     localStorage.removeItem("registrationData");
     localStorage.removeItem("onboardingProgress");
   };
@@ -97,6 +127,8 @@ export const AuthProvider = ({ children }) => {
     setRegistrationData,
     updateOnboardingProgress,
     logout,
+    loginUser,
+    registerDoctoralStudent
   };
 
   return (

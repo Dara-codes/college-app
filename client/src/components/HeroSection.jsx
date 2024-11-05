@@ -20,7 +20,7 @@ const HeroSection = () => {
               your supervisor effortlessly—all in one platform.
             </p>
             <Link
-              to="/signup"
+              to={"/auth/register"}
               className="inline-flex items-center bg-[#F6AD37] text-white px-6 py-3 rounded-[20px] mt-8"
             >
               Get started for free

@@ -12,11 +12,11 @@ const LoginLayout = ({ userType = "student" }) => {
       <div className="hidden md:flex min-h-screen">
         {/* Left Section - Form */}
         <div className="w-1/2 bg-white p-12 flex flex-col">
-          <img
+          {/* <img
             src={logoImg}
             alt="Logo"
             className="w-[100px] h-[40px] bg-[#D9D9D9] rounded"
-          />
+          /> */}
           <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
             <Outlet />
           </div>

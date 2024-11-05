@@ -27,13 +27,13 @@ const ForgotPassword = () => {
       <div className="w-full max-w-md bg-white rounded-xl p-8 shadow-[0_2px_8px_rgba(0,0,0,0.1)] border border-gray-100">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <div className="w-[100px] h-[40px] bg-[#D9D9D9] rounded">
+          {/* <div className="w-[100px] h-[40px] bg-[#D9D9D9] rounded">
             <img
               src={logoImg}
               alt="Logo"
               className="w-full h-full object-contain"
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Title and Subtitle */}
