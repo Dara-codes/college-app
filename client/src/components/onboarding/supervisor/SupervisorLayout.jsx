@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import graduateImg from "../../../assets/images/auth/supervisor-group.png";
-import logoImg from "../../../assets/images/testimonials/supervisor2.png";
+// import logoImg from "../../../assets/images/testimonials/supervisor2.png";
 
 const SupervisorLayout = ({ children, currentStep = 1, onSkip }) => {
   const navigate = useNavigate();
@@ -23,11 +23,11 @@ const SupervisorLayout = ({ children, currentStep = 1, onSkip }) => {
         <div className="w-1/2 relative bg-[#0B4C77]">
           {/* Logo positioned at top-left of image section */}
           <div className="absolute top-6 left-12 z-20">
-            <img
+            {/* <img
               src={logoImg}
               alt="Logo"
               className="w-[100px] h-[40px] bg-[#D9D9D9] rounded"
-            />
+            /> */}
           </div>
 
           <img
@@ -36,7 +36,7 @@ const SupervisorLayout = ({ children, currentStep = 1, onSkip }) => {
             className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
           />
           <div className="absolute inset-0 bg-[#0B4C77] opacity-50" />
-          <div className="absolute bottom-[25%] left-12 right-12">
+          <div className="absolute bottom-[10%] left-12 right-12">
             <h1 className="text-2xl font-bold text-white">
               Guide the next generation of researchers—join us to mentor,
               review, and inspire academic excellence
@@ -46,24 +46,22 @@ const SupervisorLayout = ({ children, currentStep = 1, onSkip }) => {
 
         {/* Right Section */}
         <div className="w-1/2 bg-white p-12 flex flex-col">
-          {/* Skip button at top-right */}
+          {/* Skip button at top-right */}{" "}
           <div className="self-end">
-            <button
+            {/* <button
               onClick={handleSkip}
               className="text-[#0B4C77] hover:text-blue-700"
             >
               Skip
-            </button>
+            </button>  */}
           </div>
-
           {/* Progress bar at top - 2 steps */}
-          <div className="w-full h-1 bg-[#E5E7EB] rounded-full overflow-hidden mb-8">
+          <div className="mx-auto w-ful w-[450px] h-2 bg-[#B4E1FE] rounded-full overflow-hidden mb-8">
             <div
               className="h-full bg-[#0B4C77] transition-all duration-300 rounded-full"
               style={{ width: progressWidth }}
             />
           </div>
-
           {/* Main Content */}
           <div className="flex-1">{children || <Outlet />}</div>
         </div>
@@ -98,15 +96,15 @@ const SupervisorLayout = ({ children, currentStep = 1, onSkip }) => {
           <div className="flex flex-col items-center gap-5">
             {/* Logo */}
             <div className="mt-5">
-              <img
+              {/* <img
                 src={logoImg}
                 alt="Logo"
                 className="w-[100px] h-[40px] bg-[#D9D9D9] rounded"
-              />
+              /> */}
             </div>
 
             {/* Progress Bar - 2 steps */}
-            <div className="w-full h-1 bg-[#E5E7EB] rounded-full overflow-hidden">
+            <div className="w-full h-[6px] bg-[#B4E1FE] rounded-full overflow-hidden">
               <div
                 className="h-full bg-[#0B4C77] transition-all duration-300 rounded-full"
                 style={{ width: progressWidth }}
