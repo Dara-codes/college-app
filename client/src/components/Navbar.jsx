@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth()
 
   const handleAuth = (path) => {
     navigate(path);
@@ -34,13 +36,13 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link to="/about" className="text-white">
+          <div className="hidden md:flex items-center space-x-5">
+            <Link to="#" className="text-white">
               About
             </Link>
             <button
               onClick={() => scrollToSection("features")}
-              className="text-white hover:text-gray-200 transition-colors"
+              className="text-white hover:text-gray-200 transition-colors px-3"
             >
               Features
             </button>
@@ -54,20 +56,24 @@ const Navbar = () => {
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4 ml-8">
-            <button
+            {
+              user ? <div className="text-white">Welcome { user?.firstName }</div> : (<>
+              <button
               onClick={() => handleAuth("/auth/register")} // Updated path here
               className="bg-[#F6AD37] text-white px-4 py-2 rounded-[20px]
-                hover:bg-[#E5932C] transition-colors"
-            >
-              Register
-            </button>
-            <button
-              onClick={() => handleAuth("/auth/login")} // Also updated login path
-              className="text-white border border-white px-4 py-2 rounded-[20px]
-                hover:bg-white/10 transition-colors"
-            >
-              Login
-            </button>
+                hover:bg-[#E5932C] transition-colors pointer"
+                >
+                  Register
+                </button>
+                <button
+                  onClick={() => handleAuth("/auth/login")} // Also updated login path
+                  className="text-white border border-white px-4 py-2 rounded-[20px]
+                    hover:bg-white/10 transition-colors"
+                >
+                  Login
+                </button>
+              </>)
+            }
           </div>
 
           {/* Mobile Menu Button */}
@@ -88,7 +94,7 @@ const Navbar = () => {
               </Link>
               <button
                 onClick={() => scrollToSection("features")}
-                className="text-white text-left hover:text-gray-200 transition-colors"
+                className="text-white text-left hover:text-gray-200 transition-colors mx-5"
               >
                 Features
               </button>

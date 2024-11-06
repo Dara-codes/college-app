@@ -1,10 +1,10 @@
 // src/components/cta/CallToAction.jsx
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import studentImage from "../../assets/images/cta/students.jpg";
 
 const CallToAction = () => {
-  const navigate = useNavigate();
+
   return (
     <section className="w-full bg-[#296C98] overflow-hidden">
       <div className="max-w-[375px] md:max-w-[1200px] mx-auto">
@@ -18,7 +18,7 @@ const CallToAction = () => {
               Join the platform that simplifies thesis management.
             </p>
             <Link
-              to="/signup"
+              to="/auth/register"
               className="inline-block bg-[#F6AD37] text-white px-6 py-3 rounded-lg
                 hover:bg-[#E5932C] transition-colors"
             >
@@ -42,7 +42,7 @@ const CallToAction = () => {
               Join the platform that simplifies thesis management.
             </p>
             <Link
-              to="/signup"
+              to="/auth/register"
               className="inline-block bg-[#F6AD37] text-white px-8 py-3 rounded-lg
                 hover:bg-[#E5932C] transition-colors"
             >

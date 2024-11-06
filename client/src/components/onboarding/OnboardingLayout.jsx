@@ -37,7 +37,7 @@ const OnboardingLayout = ({ children, currentStep = 1, onSkip }) => {
           <div className="absolute inset-0 bg-[#0B4C77] opacity-50" />
           <div className="absolute bottom-[10%] left-12 right-12">
             <h1 className="text-center font-inter text-4xl font-extrabold leading-tight text-white">
-              Thank you for joining us and Welcome to Company's Name
+              Thank you for joining us and Welcome to Doctoral
             </h1>
           </div>
         </div>
@@ -81,7 +81,7 @@ const OnboardingLayout = ({ children, currentStep = 1, onSkip }) => {
             Skip
           </button>
           <h1 className="absolute bottom-5 left-5 right-5 text-2xl font-bold text-white">
-            Thank you for joining us and Welcome to Company's Name
+            Thank you for joining us and Welcome to Doctoral
           </h1>
         </div>
 

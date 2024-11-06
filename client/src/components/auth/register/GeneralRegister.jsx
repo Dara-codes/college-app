@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 const GeneralRegister = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const { updateRegistrationData } = useAuth()
   const {
     register,
     handleSubmit,
@@ -20,32 +21,56 @@ const GeneralRegister = () => {
   const onSubmit = (data) => {
     // Only navigate if there are no errors
     if (Object.keys(errors).length === 0) {
+      updateRegistrationData(data)
       navigate("/onboarding/select-type");
     }
   };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full mx-auto max-w-md">
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
         {/* Full Name */}
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-2">
-            Full Name
+            First Name
           </label>
           <div className="relative">
             <input
-              {...register("fullName", {
-                required: "Full name is required",
+              {...register("firstName", {
+                required: "First name is required",
               })}
               type="text"
               className={`w-full px-4 py-3 rounded-lg bg-white border ${
                 errors.fullName ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-1 focus:ring-[#0B4C77]`}
-              placeholder="Enter your full name"
+              placeholder="Enter your first name"
             />
-            {errors.fullName && (
+            {errors.firstName && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.fullName.message}
+                {errors.firstName.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Last Name
+          </label>
+          <div className="relative">
+            <input
+              {...register("lastName", {
+                required: "Last name is required",
+              })}
+              type="text"
+              className={`w-full px-4 py-3 rounded-lg bg-white border ${
+                errors.fullName ? "border-red-500" : "border-gray-300"
+              } focus:outline-none focus:ring-1 focus:ring-[#0B4C77]`}
+              placeholder="Enter your last name"
+            />
+            {errors.lastName && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.lastName.message}
               </p>
             )}
           </div>
@@ -161,7 +186,7 @@ const GeneralRegister = () => {
 
         <button
           type="submit"
-          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium mt-6"
+          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium mt25"
         >
           Next
         </button>

@@ -8,7 +8,9 @@ const { verifyPassword, sendTokenResponse, VALID_ROLES } = require('../utils/aut
 const sendEmail = require('../utils/sendEmail');
 const Supervisor = require('../models/Supervisor');
 const DoctoralStudent = require('../models/DoctoralStudent');
-
+const Milestone = require('../models/Milestone');
+const ResearchInterest = require('../models/ResearchInterest');
+const { existsByEmail } = require('../services/UserService')
 
 
 // Validation middleware for doctoral student registration
@@ -19,9 +21,7 @@ exports.validateStudentRegister = [
   check('password')
     .isLength({ min: 7 })
     .withMessage('Password must be at least 7 characters long'),
-  check('researchTopic').notEmpty().withMessage('Research topic is required'),
-  check('startDate').notEmpty().withMessage('Start date is required'),
-  check('expectedCompletionDate').notEmpty().withMessage('Expected completion date is required'),
+  check('thesisTitle').notEmpty().withMessage('Thesis title is required')
 ];
 
 // Validation middleware for supervisor registration
@@ -47,8 +47,14 @@ exports.registerStudent = asyncHandler(async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { firstName, lastName, email, password, researchTopic, startDate, expectedCompletionDate } = req.body;
+  const { firstName, lastName, email, password, thesisTitle, startDate, expectedCompletionDate, thesisDescription, milestones, researchInterest } = req.body;
 
+  if (await existsByEmail(email)) {
+    return res.status(400).json({
+      success: false,
+      message: 'This email address is already registered. Please use a different email.'
+    });
+  }
   // Hash password
   const hashedPassword = await passwordUtils.hashUserPassword(password);
 
@@ -61,13 +67,37 @@ exports.registerStudent = asyncHandler(async (req, res, next) => {
     role: VALID_ROLES.DOCTORAL_STUDENT
   });
 
+
+  const milestoneIds = await Promise.all(
+    milestones.map(async (milestone) => {
+      const createdMilestone = await Milestone.create({
+        title: milestone.title,
+        startDate: milestone.startDate,
+        deadlineDate: milestone.deadlineDate,
+        createdBy: user._id 
+      });
+      return createdMilestone._id;
+    })
+  );
+
+  
+  const userResearchInterest = await ResearchInterest.create({
+    researchMethod: researchInterest.researchMethod,
+    interests: researchInterest.interests,
+    researchGoals: researchInterest.researchGoals,
+    createdBy: user._id 
+  })
+
   // Create doctoral student document
   await DoctoralStudent.create({
     user: user._id,
     email: user.email,
-    researchTopic,
+    thesisTitle,
+    thesisDescription,
     startDate,
-    expectedCompletionDate
+    expectedCompletionDate,
+    milestones: milestoneIds,
+    researchInterest: userResearchInterest._id
   });
 
   // Send response without token
@@ -138,6 +168,7 @@ exports.registerSupervisor = asyncHandler(async (req, res, next) => {
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
+  console.log('email ', email, 'password', password)
   // Validate email & password
   if (!email || !password) {
     return next(new ErrorResponse('Please provide an email and password', 400));

@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import axios from '../utils/axiosConfig'
+import { USER_TOKEN_KEY } from "../utils/constants";
 
 const AuthContext = createContext(null);
 
@@ -82,12 +84,58 @@ export const AuthProvider = ({ children }) => {
     }));
   };
 
+
+  const loginUser = async (email, password) => {
+    try {
+      const response = await axios.post("/auth/login", { email, password });
+      const { token, user } = response.data;
+      localStorage.setItem(USER_TOKEN_KEY, token);
+      setUser(user);
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error; 
+    }
+  };
+
+  const registerDoctoralStudent = async (researchInterest) => {
+    try {
+      const userToRegister = {
+        ...registrationData,
+        researchInterest
+      }
+      setRegistrationData(userToRegister)
+      await axios.post("/auth/register/student", registrationData);
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error; 
+    }
+  };
+
+
+  const initiateForgotPassword = async (userEmail) => {
+    try {
+      await axios.post("/auth/forgotpassword", { email: userEmail });
+    } catch (error) {
+      console.error("An error occurred while triggering reset password:", error);
+      throw error; 
+    }
+  };
+
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("token");
+    localStorage.removeItem(USER_TOKEN_KEY);
     localStorage.removeItem("registrationData");
     localStorage.removeItem("onboardingProgress");
   };
+
+  const updateRegistrationData = (data) => {
+    const userToRegister = {
+      ...registrationData,
+      ...data
+    }
+    setRegistrationData(userToRegister)
+    console.log('registration data ', userToRegister)
+  }
 
   const value = {
     user,
@@ -97,6 +145,10 @@ export const AuthProvider = ({ children }) => {
     setRegistrationData,
     updateOnboardingProgress,
     logout,
+    loginUser,
+    registerDoctoralStudent,
+    updateRegistrationData,
+    initiateForgotPassword
   };
 
   return (

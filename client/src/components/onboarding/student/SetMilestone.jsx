@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Target } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
 
 const SetMilestone = () => {
   const navigate = useNavigate();
@@ -10,8 +11,14 @@ const SetMilestone = () => {
     formState: { errors },
   } = useForm();
 
+  const { updateRegistrationData } = useAuth()
+
   const onSubmit = (data) => {
     console.log(data);
+    const userMilestones = {
+      milestones: Array.isArray(data) ? data : [data]
+    }
+    updateRegistrationData(userMilestones)
     navigate("/onboarding/student/research");
   };
 
@@ -36,7 +43,7 @@ const SetMilestone = () => {
               size={20}
             />
             <input
-              {...register("milestone", {
+              {...register("title", {
                 required: "Milestone is required",
               })}
               type="text"
@@ -44,9 +51,9 @@ const SetMilestone = () => {
               className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0B4C77]"
             />
           </div>
-          {errors.milestone && (
+          {errors.title && (
             <span className="text-red-500 text-sm mt-1">
-              {errors.milestone.message}
+              {errors.title.message}
             </span>
           )}
         </div>
