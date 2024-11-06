@@ -1,10 +1,10 @@
 // src/components/cta/CallToAction.jsx
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import studentImage from "../../assets/images/cta/students.jpg";
 
 const CallToAction = () => {
-  const navigate = useNavigate();
+
   return (
     <section className="w-full bg-[#296C98] overflow-hidden">
       <div className="max-w-[375px] md:max-w-[1200px] mx-auto">

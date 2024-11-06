@@ -30,13 +30,6 @@ const axiosDefaultInstance = axios.create({
   axiosDefaultInstance.interceptors.response.use((response) => {
     return response;
   }, function (error) {
-    // console.log('error', error)
-    // if ( error.response && (error.response.status === 403)) {
-    //     history.push({
-    //         pathname: '/login',
-    //         state: history.location
-    //     });
-    // }
     return Promise.reject(error);
   })
 

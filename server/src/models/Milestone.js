@@ -22,7 +22,7 @@ const MilestoneSchema = new mongoose.Schema({
     required: true
   }
 }, {
-  timestamps: true // This option adds createdAt and updatedAt fields
+  timestamps: true
 });
 
 module.exports = mongoose.model('Milestone', MilestoneSchema);

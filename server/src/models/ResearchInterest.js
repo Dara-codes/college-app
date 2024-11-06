@@ -21,7 +21,7 @@ const ResearchInterestSchema = new mongoose.Schema({
     required: true
   }
 }, {
-  timestamps: true // This option adds createdAt and updatedAt fields
+  timestamps: true
 });
 
 module.exports = mongoose.model('ResearchInterest', ResearchInterestSchema);

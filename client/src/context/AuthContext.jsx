@@ -104,8 +104,7 @@ export const AuthProvider = ({ children }) => {
         researchInterest
       }
       setRegistrationData(userToRegister)
-      const response = await axios.post("/auth/register/student", registrationData);
-      console.log('response oo ', response) 
+      await axios.post("/auth/register/student", registrationData);
     } catch (error) {
       console.error("Registration failed:", error);
       throw error; 
@@ -115,8 +114,7 @@ export const AuthProvider = ({ children }) => {
 
   const initiateForgotPassword = async (userEmail) => {
     try {
-      const response = await axios.post("/auth/forgotpassword", { email: userEmail });
-      console.log('response oo ', response) 
+      await axios.post("/auth/forgotpassword", { email: userEmail });
     } catch (error) {
       console.error("An error occurred while triggering reset password:", error);
       throw error; 
