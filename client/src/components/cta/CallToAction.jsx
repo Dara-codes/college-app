@@ -18,7 +18,7 @@ const CallToAction = () => {
               Join the platform that simplifies thesis management.
             </p>
             <Link
-              to="/signup"
+              to="/auth/register"
               className="inline-block bg-[#F6AD37] text-white px-6 py-3 rounded-lg
                 hover:bg-[#E5932C] transition-colors"
             >
@@ -42,7 +42,7 @@ const CallToAction = () => {
               Join the platform that simplifies thesis management.
             </p>
             <Link
-              to="/signup"
+              to="/auth/register"
               className="inline-block bg-[#F6AD37] text-white px-8 py-3 rounded-lg
                 hover:bg-[#E5932C] transition-colors"
             >

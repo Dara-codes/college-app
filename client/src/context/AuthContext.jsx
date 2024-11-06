@@ -97,17 +97,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const registerDoctoralStudent = async (universityDetails) => {
+  const registerDoctoralStudent = async (researchInterest) => {
     try {
       const userToRegister = {
         ...registrationData,
-        ...universityDetails
+        researchInterest
       }
       setRegistrationData(userToRegister)
-      const response = await axios.post("/auth/register/student", userToRegister);
+      const response = await axios.post("/auth/register/student", registrationData);
       console.log('response oo ', response) 
     } catch (error) {
       console.error("Registration failed:", error);
+      throw error; 
+    }
+  };
+
+
+  const initiateForgotPassword = async (userEmail) => {
+    try {
+      const response = await axios.post("/auth/forgotpassword", { email: userEmail });
+      console.log('response oo ', response) 
+    } catch (error) {
+      console.error("An error occurred while triggering reset password:", error);
       throw error; 
     }
   };
@@ -119,6 +130,15 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("onboardingProgress");
   };
 
+  const updateRegistrationData = (data) => {
+    const userToRegister = {
+      ...registrationData,
+      ...data
+    }
+    setRegistrationData(userToRegister)
+    console.log('registration data ', userToRegister)
+  }
+
   const value = {
     user,
     loading,
@@ -128,7 +148,9 @@ export const AuthProvider = ({ children }) => {
     updateOnboardingProgress,
     logout,
     loginUser,
-    registerDoctoralStudent
+    registerDoctoralStudent,
+    updateRegistrationData,
+    initiateForgotPassword
   };
 
   return (

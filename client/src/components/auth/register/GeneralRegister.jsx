@@ -8,7 +8,7 @@ const GeneralRegister = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { registrationData, setRegistrationData } = useAuth()
+  const { updateRegistrationData } = useAuth()
   const {
     register,
     handleSubmit,
@@ -21,18 +21,13 @@ const GeneralRegister = () => {
   const onSubmit = (data) => {
     // Only navigate if there are no errors
     if (Object.keys(errors).length === 0) {
-      const userToRegister = {
-        ...registrationData,
-        ...data
-      }
-      setRegistrationData(userToRegister)
-      console.log('registration data ', userToRegister)
+      updateRegistrationData(data)
       navigate("/onboarding/select-type");
     }
   };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full mx-auto max-w-md">
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
         {/* Full Name */}
         <div>
@@ -191,7 +186,7 @@ const GeneralRegister = () => {
 
         <button
           type="submit"
-          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium mt-6"
+          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium mt25"
         >
           Next
         </button>

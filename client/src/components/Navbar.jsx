@@ -36,13 +36,13 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link to="/about" className="text-white">
+          <div className="hidden md:flex items-center space-x-5">
+            <Link to="#" className="text-white">
               About
             </Link>
             <button
               onClick={() => scrollToSection("features")}
-              className="text-white hover:text-gray-200 transition-colors"
+              className="text-white hover:text-gray-200 transition-colors px-3"
             >
               Features
             </button>
@@ -61,7 +61,7 @@ const Navbar = () => {
               <button
               onClick={() => handleAuth("/auth/register")} // Updated path here
               className="bg-[#F6AD37] text-white px-4 py-2 rounded-[20px]
-                hover:bg-[#E5932C] transition-colors"
+                hover:bg-[#E5932C] transition-colors pointer"
                 >
                   Register
                 </button>
@@ -94,7 +94,7 @@ const Navbar = () => {
               </Link>
               <button
                 onClick={() => scrollToSection("features")}
-                className="text-white text-left hover:text-gray-200 transition-colors"
+                className="text-white text-left hover:text-gray-200 transition-colors mx-5"
               >
                 Features
               </button>

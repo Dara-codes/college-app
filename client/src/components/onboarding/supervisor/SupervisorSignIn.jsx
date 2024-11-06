@@ -28,9 +28,7 @@ const SupervisorSignIn = () => {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <h2 className="text-[#0B4C77] text-2xl font-semibold mb-6">
-        Sign up (Project Design)
-      </h2>
+      <h2 className="text-[#0B4C77] text-2xl font-semibold mb-6">Sign up</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Full Name */}

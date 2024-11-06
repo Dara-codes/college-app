@@ -109,6 +109,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { BookOpen } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
 
 const ProfileCustomization = () => {
   const navigate = useNavigate();
@@ -118,8 +119,11 @@ const ProfileCustomization = () => {
     formState: { errors },
   } = useForm();
 
+  const { updateRegistrationData } = useAuth()
+
   const onSubmit = (data) => {
     console.log(data);
+    updateRegistrationData(data)
     navigate("/onboarding/student/milestone");
   };
 
@@ -168,7 +172,7 @@ const ProfileCustomization = () => {
             Description
           </label>
           <textarea
-            {...register("description")}
+            {...register("thesisDescription")}
             placeholder="Description"
             rows={4}
             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0B4C77] resize-none"

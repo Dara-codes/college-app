@@ -131,10 +131,12 @@ import { useNavigate } from "react-router-dom";
 import { Search, Target, Microscope } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 
 const ResearchInterest = () => {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
+
 
   const {
     register,
@@ -142,13 +144,14 @@ const ResearchInterest = () => {
     formState: { errors },
   } = useForm();
 
+  const { registerDoctoralStudent } = useAuth()
+
+
   const onSubmit = async (data) => {
     try {
       setIsSaving(true);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await registerDoctoralStudent(data)
 
-      // Here you would save to your database
       console.log("Saving research data:", data);
 
       // Show success notification
@@ -280,7 +283,7 @@ const ResearchInterest = () => {
         <button
           type="submit"
           disabled={isSaving}
-          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed mt25"
         >
           {isSaving ? (
             <span className="flex items-center justify-center">

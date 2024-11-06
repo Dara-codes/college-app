@@ -2,7 +2,8 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail } from "lucide-react";
 import { toast } from "react-hot-toast";
-import logoImg from "../../../assets/images/student.png";
+import { useAuth } from "../../../context/AuthContext";
+// import logoImg from "../../../assets/images/student.png";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -12,13 +13,18 @@ const ForgotPassword = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const { initiateForgotPassword } = useAuth()
+
   const onSubmit = async (data) => {
+    const userEmail = data.email
     try {
-      console.log("Recovery email:", data.email);
-      toast.success("Recovery email sent successfully!");
-      navigate("/auth/check-email");
+      console.log("Recovery email:", userEmail);
+      toast.success("If an account with this email exists, you will receive a password reset email shortly.!");
+      await initiateForgotPassword(userEmail)
     } catch (error) {
-      toast.error("Failed to send recovery email");
+      
+    } finally {
+      navigate(`/auth/check-email?email=${userEmail}`);
     }
   };
 
@@ -27,13 +33,13 @@ const ForgotPassword = () => {
       <div className="w-full max-w-md bg-white rounded-xl p-8 shadow-[0_2px_8px_rgba(0,0,0,0.1)] border border-gray-100">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          {/* <div className="w-[100px] h-[40px] bg-[#D9D9D9] rounded">
-            <img
+          <div className="w-[100px] h-[40px] bg-[#D9D9D9] rounded">
+            {/* <img
               src={logoImg}
               alt="Logo"
               className="w-full h-full object-contain"
-            />
-          </div> */}
+            /> */}
+          </div>
         </div>
 
         {/* Title and Subtitle */}

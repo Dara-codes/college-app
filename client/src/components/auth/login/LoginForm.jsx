@@ -4,9 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-hot-toast";
+import MiniLoader from "../../common/MiniLoader";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading ] = useState(false)
   const navigate = useNavigate()
 
   const { loginUser } = useAuth()
@@ -18,12 +20,15 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
+      setIsLoading(true)
       await loginUser(data.email, data.password);
       navigate('/')
     } catch (err) {
       console.error("Login failed:", err);
       const errorMsg = err?.response?.data?.error || 'An unexpected error occurred during login'
       toast.error(errorMsg)
+    } finally {
+      setIsLoading(false)
     }
     
   };
@@ -108,7 +113,10 @@ const LoginForm = () => {
           type="submit"
           className="w-full py-3 bg-[#0B4C77] text-white rounded-lg font-medium"
         >
-          Login
+          {
+            isLoading ? (<MiniLoader loadingText={'Login'} />) : (<span>Login</span>)
+          }
+          
         </button>
 
         <p className="text-center text-gray-600 text-sm">

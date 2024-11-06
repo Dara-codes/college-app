@@ -1,9 +1,9 @@
 import { Mail } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const CheckEmail = () => {
+const CheckEmail = ({ userEmail }) => {
   // Get email from state/context that was entered in forgot password page
-  const userEmail = "deejayblinks@gmail.com";
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50/50 p-4">
@@ -27,7 +27,7 @@ const CheckEmail = () => {
 
         {/* Open Email App Button */}
         <button
-          onClick={() => window.open("mailto:")}
+          onClick={() => window.open(`mailto:${userEmail}`)}
           className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium mb-4"
         >
           Open the email app
@@ -36,7 +36,7 @@ const CheckEmail = () => {
         {/* Resend Link */}
         <p className="text-center text-sm text-gray-600 mb-6">
           Didn't receive mail? Click to{" "}
-          <button className="text-[#0B4C77] font-medium hover:underline">
+          <button className="text-[#0B4C77] font-medium hover:underline" onClick={() => navigate("/auth/forgot-password")} >
             resend
           </button>
         </p>

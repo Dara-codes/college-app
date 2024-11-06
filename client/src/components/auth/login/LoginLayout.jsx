@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import graduateImg from "../../../assets/images/auth/student-group.png";
 import supervisorImg from "../../../assets/images/auth/supervisor-group.png";
-import logoImg from "../../../assets/images/cta/students.jpg";
+// import logoImg from "../../../assets/images/cta/students.jpg";
 
 const LoginLayout = ({ userType = "student" }) => {
   const backgroundImage = userType === "student" ? graduateImg : supervisorImg;
@@ -47,11 +47,11 @@ const LoginLayout = ({ userType = "student" }) => {
 
         {/* Form Section */}
         <div className="flex-1 bg-white px-5 pt-8 pb-6 flex flex-col items-center">
-          <img
+          {/* <img
             src={logoImg}
             alt="Logo"
             className="w-[100px] h-[40px] bg-[#D9D9D9] rounded mb-6"
-          />
+          /> */}
           <div className="w-full max-w-md">
             <Outlet />
           </div>

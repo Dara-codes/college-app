@@ -10,13 +10,10 @@ const SelectUserType = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { registrationData, setRegistrationData } = useAuth()
+  const { updateRegistrationData } = useAuth()
 
   const onSubmit = (data) => {
-    setRegistrationData({ 
-      ...registrationData,
-      userType: data.userType
-    })
+    updateRegistrationData(data)
     if (data.userType === "student") {
       navigate("/onboarding/student/signup");
     } else {
