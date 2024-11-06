@@ -10,7 +10,14 @@ const ProfileCustomizationPage = () => {
   };
 
   return (
-    <OnboardingLayout currentStep={2} onSkip={handleSkip}>
+    <OnboardingLayout
+      currentStep={2}
+      to="/onboarding/student/signup"
+      onSkip={handleSkip}
+      Thesistrack="Thank you for joining and 
+welcome to ThesisTrack"
+      pageTitle="Personalize your Profile"
+    >
       <ProfileCustomizationForm />
     </OnboardingLayout>
   );

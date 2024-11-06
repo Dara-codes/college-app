@@ -3,7 +3,11 @@ import OnboardingLayout from "../../../components/onboarding/OnboardingLayout";
 
 const ResearchInterestPage = () => {
   return (
-    <OnboardingLayout currentStep={4}>
+    <OnboardingLayout
+      currentStep={4}
+      to="/onboarding/student/milestone"
+      pageTitle="Research and Interest"
+    >
       <ResearchInterestForm />
     </OnboardingLayout>
   );

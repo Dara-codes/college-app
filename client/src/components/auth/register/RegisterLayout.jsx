@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import RegisterProgressBar from "./RegisterProgressBar";
-import graduateImg from "../../../assets/images/auth/student-group.png";
+import graduateImg from "../../../assets/images/auth/generalsignup.png";
 // import logoImg from "../../../assets/images/auth/supervisor-group.png";
 
 const RegisterLayout = ({ currentStep = 1 }) => {

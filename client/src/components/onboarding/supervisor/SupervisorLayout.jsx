@@ -55,6 +55,11 @@ const SupervisorLayout = ({ children, currentStep = 1, onSkip }) => {
               Skip
             </button>  */}
           </div>
+          <div className="w-full max-w-md mx-auto">
+            <h2 className="text-[#0B4C77] text-2xl font-semibold mb-6">
+              Sign up
+            </h2>
+          </div>
           {/* Progress bar at top - 2 steps */}
           <div className="mx-auto w-ful w-[450px] h-2 bg-[#B4E1FE] rounded-full overflow-hidden mb-8">
             <div
@@ -102,6 +107,9 @@ const SupervisorLayout = ({ children, currentStep = 1, onSkip }) => {
                 className="w-[100px] h-[40px] bg-[#D9D9D9] rounded"
               /> */}
             </div>
+            <h2 className="text-[#0B4C77] text-2xl font-semibold mb-6">
+              Sign up
+            </h2>
 
             {/* Progress Bar - 2 steps */}
             <div className="w-full h-[6px] bg-[#B4E1FE] rounded-full overflow-hidden">
@@ -116,6 +124,13 @@ const SupervisorLayout = ({ children, currentStep = 1, onSkip }) => {
           </div>
         </div>
       </div>
+      <style jsx>{`
+        @media (max-width: 767px) {
+          .select-dropdown {
+            width: 100%;
+          }
+        }
+      `}</style>
     </div>
   );
 };

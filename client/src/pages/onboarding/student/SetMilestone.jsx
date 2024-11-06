@@ -10,7 +10,14 @@ const SetMilestonePage = () => {
   };
 
   return (
-    <OnboardingLayout currentStep={3} onSkip={handleSkip}>
+    <OnboardingLayout
+      currentStep={3}
+      to="/onboarding/student/profile"
+      onSkip={handleSkip}
+      pageTitle="Milestone"
+      Thesistrack=""
+      pageSubtitle="Finish your Thesis faster with our help"
+    >
       <SetMilestoneForm />
     </OnboardingLayout>
   );

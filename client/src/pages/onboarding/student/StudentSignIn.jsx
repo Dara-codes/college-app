@@ -4,7 +4,11 @@ import StudentSignInComponent from "../../../components/onboarding/student/Stude
 
 const StudentSignIn = () => {
   return (
-    <OnboardingLayout currentStep={1}>
+    <OnboardingLayout
+      currentStep={1}
+      Thesistrack="Transform your thesis into a polished, publication-ready Masterpiece"
+      to="/onboarding/select-type"
+    >
       <StudentSignInComponent />
     </OnboardingLayout>
   );
