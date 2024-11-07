@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Search, Target, Microscope } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 
 const ResearchInterest = () => {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
+
 
   const {
     register,
@@ -14,13 +16,14 @@ const ResearchInterest = () => {
     formState: { errors },
   } = useForm();
 
+  const { registerDoctoralStudent } = useAuth()
+
+
   const onSubmit = async (data) => {
     try {
       setIsSaving(true);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await registerDoctoralStudent(data)
 
-      // Here you would save to your database
       console.log("Saving research data:", data);
 
       // Show success notification

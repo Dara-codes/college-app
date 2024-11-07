@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 const GeneralRegister = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const { updateRegistrationData, resetRegistrationData } = useAuth()
   const {
     register,
     handleSubmit,
@@ -20,17 +21,19 @@ const GeneralRegister = () => {
   const onSubmit = (data) => {
     // Only navigate if there are no errors
     if (Object.keys(errors).length === 0) {
+      resetRegistrationData()
+      updateRegistrationData(data)
       navigate("/onboarding/select-type");
     }
   };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full mx-auto max-w-md">
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
         {/* Full Name */}
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-2">
-            Full Name
+            First Name
           </label>
           <div className="relative">
             <svg
@@ -51,15 +54,60 @@ const GeneralRegister = () => {
               />
             </svg>
             <input
-              {...register("fullName", {
-                required: "Full name is required",
+              {...register("firstName", {
+                required: "First name is required",
               })}
               type="text"
               className={`w-full pl-10 pr-10 py-3 rounded-lg bg-white border ${
                 errors.fullName ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-1 focus:ring-[#0B4C77]`}
-              placeholder="Enter your full name"
+              placeholder="Enter your first name"
             />
+            {errors.firstName && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.firstName.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Last Name
+          </label>
+          <div className="relative">
+          <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="21"
+              viewBox="0 0 20 21"
+              fill="none"
+              className="absolute left-3 top-1/2 -translate-y-1/2"
+            >
+              <path
+                d="M10.0003 9.66667C11.8413 9.66667 13.3337 8.17428 13.3337 6.33333C13.3337 4.49238 11.8413 3 10.0003 3C8.15938 3 6.66699 4.49238 6.66699 6.33333C6.66699 8.17428 8.15938 9.66667 10.0003 9.66667Z"
+                fill="#494949"
+              />
+              <path
+                d="M4.4217 15.5C3.0412 17.7251 7.61094 18.8333 10.0003 18.8333C12.3897 18.8333 16.9594 17.7251 15.5789 15.5C14.5408 13.8267 12.441 12.1667 10.0003 12.1667C7.55968 12.1667 5.45985 13.8267 4.4217 15.5Z"
+                fill="#494949"
+              />
+            </svg>
+            <input
+              {...register("lastName", {
+                required: "Last name is required",
+              })}
+              type="text"
+              className={`w-full pl-10 pr-10 py-3 rounded-lg bg-white border ${
+                errors.fullName ? "border-red-500" : "border-gray-300"
+              } focus:outline-none focus:ring-1 focus:ring-[#0B4C77]`}
+              placeholder="Enter your last name"
+            />
+            {errors.lastName && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.lastName.message}
+              </p>
+            )}
           </div>
           {errors.fullName && (
             <p className="text-red-500 text-sm mt-1">
@@ -215,7 +263,7 @@ const GeneralRegister = () => {
 
         <button
           type="submit"
-          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium mt-6"
+          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium mt25"
         >
           Next
         </button>

@@ -18,15 +18,22 @@ const SupervisorSchema = new mongoose.Schema({
   },
   department: {
     type: String,
-    required: [true, 'Please add a department']
+    required: [true, 'Please add a department'] // TODO - change to point to the department collection instead
+  },
+  university: {
+    type: String,
+    required: [true, 'Please add a university'] // TODO - change to point to the university collection instead
   },
   specialization: {
     type: String,
-    required: [true, 'Please add a specialization']
   },
   yearsOfExperience: {
-    type: Number,
+    type: String,
     required: [true, 'Please add years of experience']
+  },
+  academicTitle: {
+    type: String,
+    enum: ['Mr', 'Dr', 'Prof']
   }
 }, {
   timestamps: true

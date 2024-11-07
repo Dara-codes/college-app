@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const SelectUserType = () => {
   const navigate = useNavigate();
@@ -9,8 +10,10 @@ const SelectUserType = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const { updateRegistrationData } = useAuth()
 
   const onSubmit = (data) => {
+    updateRegistrationData(data)
     if (data.userType === "student") {
       navigate("/onboarding/student/signup");
     } else {

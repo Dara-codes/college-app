@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useAuth } from "../../../context/AuthContext";
 // import logoImg from "../../../assets/images/student.png";
 
 const ForgotPassword = () => {
@@ -12,13 +13,18 @@ const ForgotPassword = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const { initiateForgotPassword } = useAuth()
+
   const onSubmit = async (data) => {
+    const userEmail = data.email
     try {
-      console.log("Recovery email:", data.email);
-      toast.success("Recovery email sent successfully!");
-      navigate("/auth/check-email");
+      console.log("Recovery email:", userEmail);
+      toast.success("If an account with this email exists, you will receive a password reset email shortly.!");
+      await initiateForgotPassword(userEmail)
     } catch (error) {
-      toast.error("Failed to send recovery email");
+      
+    } finally {
+      navigate(`/auth/check-email?email=${userEmail}`);
     }
   };
 

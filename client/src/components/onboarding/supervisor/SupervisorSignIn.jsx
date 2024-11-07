@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 // import { User, Building, BookOpen, Calendar, ChevronDown } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 
 const SupervisorSignIn = () => {
   const navigate = useNavigate();
@@ -14,12 +15,13 @@ const SupervisorSignIn = () => {
     formState: { errors },
   } = useForm();
 
+  const { registerSupervisor } = useAuth()
+
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await registerSupervisor(data)
 
       // Show success notification
       toast.success("Account created successfully!", {
@@ -263,7 +265,7 @@ const SupervisorSignIn = () => {
               />
             </svg>
             <select
-              {...register("experience", {
+              {...register("yearsOfExperience", {
                 required: "Years of experience is required",
               })}
               className={inputClasses}
@@ -293,9 +295,9 @@ const SupervisorSignIn = () => {
               />
             </svg>
           </div>
-          {errors.experience && (
+          {errors.yearsOfExperience && (
             <span className="text-red-500 text-sm mt-1">
-              {errors.experience.message}
+              {errors.yearsOfExperience.message}
             </span>
           )}
         </div>
@@ -304,7 +306,7 @@ const SupervisorSignIn = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full pt-[20px] py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full mt-[20px] py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <span className="flex items-center justify-center">

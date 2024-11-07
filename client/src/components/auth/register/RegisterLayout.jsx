@@ -34,15 +34,17 @@ const RegisterLayout = ({ currentStep = 1 }) => {
         </div>
 
         {/* Right Section */}
-        <div className="w-1/2 bg-white p-12 flex flex-col">
-          <h2 className="text-[#0B4C77] text-2xl font-semibold mb-6">
-            Sign up
-          </h2>
-          <div className="mb-8">
-            <RegisterProgressBar currentStep={currentStep} />
+        <div className="w-1/2 bg-white p-12">
+          <div className="w-full mx-auto max-w-md">
+            <h2 className="text-[#0B4C77] text-2xl font-semibold mb-6">
+              Sign up
+            </h2>
+            <div className="mb-8 mx-auto">
+              <RegisterProgressBar currentStep={currentStep} />
+            </div>
+            <Outlet />
           </div>
-          <Outlet />
-        </div>
+          </div>
       </div>
 
       {/* Mobile Layout */}

@@ -16,7 +16,11 @@ const DoctoralStudentSchema = new mongoose.Schema({
       'Please add a valid email'
     ]
   },
-  researchTopic: {
+  thesisTitle: {
+    type: String,
+    required: [true, 'Please add a research topic']
+  },
+  thesisDescription: {
     type: String,
     required: [true, 'Please add a research topic']
   },
@@ -26,11 +30,22 @@ const DoctoralStudentSchema = new mongoose.Schema({
   },
   startDate: {
     type: Date,
-    required: [true, 'Please add a start date']
+    required: [false, 'Please add a start date'],
+    default: Date.now()
   },
   expectedCompletionDate: {
     type: Date,
-    required: [true, 'Please add an expected completion date']
+    required: [false, 'Please add an expected completion date']
+  },
+  milestones: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Milestone'
+    }
+  ],
+  researchInterest: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ResearchInterest'
   }
 }, {
   timestamps: true

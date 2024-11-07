@@ -37,7 +37,7 @@ const SupervisorLayout = ({ children, currentStep = 1, onSkip }) => {
           />
           <div className="absolute inset-0 bg-[#0B4C77] opacity-50" />
           <div className="absolute bottom-[10%] left-12 right-12">
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-4xl font-inter font-bold text-white">
               Guide the next generation of researchers—join us to mentor,
               review, and inspire academic excellence
             </h1>

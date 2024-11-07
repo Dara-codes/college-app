@@ -10,7 +10,7 @@ const userRoutes = require('./routes/userRoutes');
 const trainingModuleRoutes = require('./routes/trainingModuleRoutes');
 const doctoralStudentRoutes = require('./routes/doctoralStudentRoutes');
 const supervisorRoutes = require('./routes/supervisorRoutes')
-
+const cors = require('cors');
 
 const app = express();
 
@@ -22,6 +22,15 @@ app.use(express.json());
 
 // Cookie parser
 app.use(cookieParser());
+
+const corsOptions = {
+  origin: process.env.CLIENT_BASE_URL || 'http://localhost:3000',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 // Mount routers
  app.use('/api/v1/auth', auth);
