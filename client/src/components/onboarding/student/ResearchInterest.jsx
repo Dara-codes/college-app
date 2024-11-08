@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Search, Target, Microscope } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
-import { useAuth } from "../../../context/AuthContext";
 
 const ResearchInterest = () => {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
-
 
   const {
     register,
@@ -16,14 +14,13 @@ const ResearchInterest = () => {
     formState: { errors },
   } = useForm();
 
-  const { registerDoctoralStudent } = useAuth()
-
-
   const onSubmit = async (data) => {
     try {
       setIsSaving(true);
-      await registerDoctoralStudent(data)
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
+      // save to database
       console.log("Saving research data:", data);
 
       // Show success notification
@@ -39,7 +36,7 @@ const ResearchInterest = () => {
         icon: "🎉",
       });
 
-      // Wait for toast to be visible before redirecting
+      // Waiting for toast to be visible before redirecting
       setTimeout(() => {
         navigate("/auth/login");
       }, 1000);
@@ -69,7 +66,7 @@ const ResearchInterest = () => {
         Research and Interest
       </h2> */}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mb-11">
         {/* Research Method */}
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-2">
@@ -162,7 +159,7 @@ const ResearchInterest = () => {
           <label className="block text-gray-700 text-sm font-medium mb-2">
             Research Goals
           </label>
-          <div className="relative">
+          <div className="relative mb-5">
             {/* <Target
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={20}
@@ -211,12 +208,11 @@ const ResearchInterest = () => {
             </span>
           )}
         </div>
-
         {/* Save Button */}
         <button
           type="submit"
           disabled={isSaving}
-          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed pt-[20px]"
+          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSaving ? (
             <span className="flex items-center justify-center">

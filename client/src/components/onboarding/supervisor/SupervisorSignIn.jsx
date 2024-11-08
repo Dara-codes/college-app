@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 // import { User, Building, BookOpen, Calendar, ChevronDown } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
-import { useAuth } from "../../../context/AuthContext";
 
 const SupervisorSignIn = () => {
   const navigate = useNavigate();
@@ -15,13 +14,12 @@ const SupervisorSignIn = () => {
     formState: { errors },
   } = useForm();
 
-  const { registerSupervisor } = useAuth()
-
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
 
-      await registerSupervisor(data)
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Show success notification
       toast.success("Account created successfully!", {
@@ -36,7 +34,7 @@ const SupervisorSignIn = () => {
         icon: "🎉",
       });
 
-      // Wait for toast to be visible before redirecting
+      // Waiting for toast to be visible before redirecting
       setTimeout(() => {
         navigate("/auth/login");
       }, 1500);
@@ -246,7 +244,7 @@ const SupervisorSignIn = () => {
         {/* Years of Experience */}
         <div>
           <label className={labelClasses}>Years of Experience</label>
-          <div className="relative">
+          <div className="relative mb-5">
             {/* <Calendar
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={20}
@@ -265,7 +263,7 @@ const SupervisorSignIn = () => {
               />
             </svg>
             <select
-              {...register("yearsOfExperience", {
+              {...register("experience", {
                 required: "Years of experience is required",
               })}
               className={inputClasses}
@@ -295,9 +293,9 @@ const SupervisorSignIn = () => {
               />
             </svg>
           </div>
-          {errors.yearsOfExperience && (
+          {errors.experience && (
             <span className="text-red-500 text-sm mt-1">
-              {errors.yearsOfExperience.message}
+              {errors.experience.message}
             </span>
           )}
         </div>
@@ -306,7 +304,7 @@ const SupervisorSignIn = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full mt-[20px] py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full pt-[20px] py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <span className="flex items-center justify-center">

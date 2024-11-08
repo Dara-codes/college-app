@@ -17,7 +17,7 @@ const StudentSignIn = () => {
     formState: { errors },
   } = useForm();
 
-  const { updateRegistrationData } = useAuth()
+  const { updateRegistrationData } = useAuth();
 
   const universities = [
     "University of Lagos",
@@ -29,7 +29,7 @@ const StudentSignIn = () => {
 
   const onSubmit = async (data) => {
     console.log(data);
-    updateRegistrationData(data)
+    updateRegistrationData(data);
     navigate("/onboarding/student/profile");
   };
 
@@ -45,7 +45,7 @@ const StudentSignIn = () => {
       {/* <h2 className="text-[#0B4C77] text-[27px] leading-custom-line-height font-semibold mb-4">
         Sign up
       </h2> */}
-      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto space-y-6 mb-">
         <div className="">
           <label className="block text-gray-700 text-sm font-medium mb-1.5">
             User type
@@ -238,7 +238,7 @@ const StudentSignIn = () => {
               {...register("supervisorCode")}
               type="text"
               placeholder="Enter invite code"
-              className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0B4C77]"
+              className="w-full pl-10 pr-4 py-3 mb-5 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0B4C77]"
             />
           </div>
         </div>
@@ -246,7 +246,7 @@ const StudentSignIn = () => {
         {/* Buttons */}
         <button
           type="submit"
-          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium"
+          className="w-full  py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium"
         >
           Create account
         </button>

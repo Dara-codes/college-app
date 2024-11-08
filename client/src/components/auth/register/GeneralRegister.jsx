@@ -8,7 +8,7 @@ const GeneralRegister = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { updateRegistrationData, resetRegistrationData } = useAuth()
+  const { updateRegistrationData, resetRegistrationData } = useAuth();
   const {
     register,
     handleSubmit,
@@ -21,8 +21,8 @@ const GeneralRegister = () => {
   const onSubmit = (data) => {
     // Only navigate if there are no errors
     if (Object.keys(errors).length === 0) {
-      resetRegistrationData()
-      updateRegistrationData(data)
+      resetRegistrationData();
+      updateRegistrationData(data);
       navigate("/onboarding/select-type");
     }
   };
@@ -63,12 +63,12 @@ const GeneralRegister = () => {
               } focus:outline-none focus:ring-1 focus:ring-[#0B4C77]`}
               placeholder="Enter your first name"
             />
-            {errors.firstName && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.firstName.message}
-              </p>
-            )}
           </div>
+          {errors.firstName && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.firstName.message}
+            </p>
+          )}
         </div>
 
         <div>
@@ -76,7 +76,7 @@ const GeneralRegister = () => {
             Last Name
           </label>
           <div className="relative">
-          <svg
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
               height="21"
@@ -103,15 +103,15 @@ const GeneralRegister = () => {
               } focus:outline-none focus:ring-1 focus:ring-[#0B4C77]`}
               placeholder="Enter your last name"
             />
-            {errors.lastName && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.lastName.message}
-              </p>
-            )}
           </div>
-          {errors.fullName && (
+          {/* {errors.fullName && (
             <p className="text-red-500 text-sm mt-1">
               {errors.fullName.message}
+            </p>
+          )} */}
+          {errors.lastName && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.lastName.message}
             </p>
           )}
         </div>
@@ -213,10 +213,10 @@ const GeneralRegister = () => {
 
         {/* Confirm Password */}
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2">
+          <label className="block text-gray-700 text-sm font-medium mb-5">
             Confirm Password
           </label>
-          <div className="relative">
+          <div className="relative mb-5">
             {/* <Lock
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={20}
@@ -263,7 +263,7 @@ const GeneralRegister = () => {
 
         <button
           type="submit"
-          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium mt25"
+          className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium"
         >
           Next
         </button>

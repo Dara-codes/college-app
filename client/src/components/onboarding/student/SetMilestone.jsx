@@ -11,14 +11,14 @@ const SetMilestone = () => {
     formState: { errors },
   } = useForm();
 
-  const { updateRegistrationData } = useAuth()
+  const { updateRegistrationData } = useAuth();
 
   const onSubmit = (data) => {
     console.log(data);
     const userMilestones = {
-      milestones: Array.isArray(data) ? data : [data]
-    }
-    updateRegistrationData(userMilestones)
+      milestones: Array.isArray(data) ? data : [data],
+    };
+    updateRegistrationData(userMilestones);
     navigate("/onboarding/student/research");
   };
 
@@ -117,7 +117,7 @@ const SetMilestone = () => {
           <label className="block text-gray-700 text-sm font-medium mb-2">
             Deadline/Date
           </label>
-          <div className="relative">
+          <div className="relative mb-5">
             <Calendar
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={20}
@@ -137,7 +137,6 @@ const SetMilestone = () => {
             </span>
           )}
         </div>
-
         <button
           type="submit"
           className="w-full py-3 bg-[#0B4C77] text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium"
