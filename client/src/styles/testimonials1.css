@@ -1,0 +1,16 @@
+/* src/styles/testimonials.css */
+.swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: #d1d5db;
+  opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+  background: #f7ac1b;
+}
+
+.swiper-button-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
