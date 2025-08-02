@@ -13,35 +13,51 @@ import RegisterLayout from "./components/auth/register/RegisterLayout";
 import Register from "./pages/auth/register/Register";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import { Toaster } from "react-hot-toast";
+import { TrainingProvider } from "./context/TrainingContext";
 
 const App = () => {
   return (
     <AuthProvider>
-      <Toaster />
-      <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/auth/*" element={<AuthRoutes />} />
+      <TrainingProvider>
+        <Toaster />
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/auth/*" element={<AuthRoutes />} />
 
-          {/* Auth Routes */}
-          <Route path="/auth" element={<RegisterLayout currentStep={1} />}>
-            <Route path="register" element={<Register />} />
-          </Route>
+            {/* Auth Routes */}
+            <Route path="/auth" element={<RegisterLayout currentStep={1} />}>
+              <Route path="register" element={<Register />} />
+            </Route>
 
-          {/* Onboarding Routes */}
-          <Route
-            path="/onboarding"
-            element={<RegisterLayout currentStep={2} />}
-          >
-            <Route path="select-type" element={<SelectUserType />} />
-          </Route>
-          <Route path="/*" element={<ProtectedRoutes />} />
-          {/* Catch-all Unauthorized Route */}
-          <Route path="/unauthorized" element={<UnauthorizedPage />} />
-          <Route path="/onboarding/*" element={<OnboardingRoutes />} />
-        </Routes>
-      </BrowserRouter>
+            {/* Onboarding Routes */}
+            <Route
+              path="/onboarding"
+              element={<RegisterLayout currentStep={2} />}
+            >
+              <Route path="select-type" element={<SelectUserType />} />
+            </Route>
+            <Route path="/*" element={<ProtectedRoutes />} />
+
+            {/* Student Dashboard Routes */}
+            <Route
+              path="/student-dashboard/*"
+              element={<StudentDashboardRoutes />}
+            />
+
+            {/* Supervisor Dashboard Routes */}
+            <Route
+              path="/supervisor-dashboard/*"
+              element={<SupervisorDashboardRoutes />}
+            />
+
+            {/* Catch-all Unauthorized Route */}
+            <Route path="/unauthorized" element={<UnauthorizedPage />} />
+            <Route path="/onboarding/*" element={<OnboardingRoutes />} />
+          </Routes>
+        </BrowserRouter>
+      </TrainingProvider>
     </AuthProvider>
   );
 };

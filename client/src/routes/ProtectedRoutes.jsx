@@ -1,7 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import StudentDashboard from "../pages/student/Dashboard";
-import SupervisorDashboard from "../pages/supervisor/Dashboard";
+import SupervisorDashboard from "../pages/supervisor/SupervisorDashboardLayout";
 import useAuth from "../context/AuthContext"; // You'll need to implement this
+import StudentDashboardLayout from "../pages/student/StudentDashboardLayout";
+import SupervisorDashboardLayout from "../pages/supervisor/SupervisorDashboardLayout";
 
 const ProtectedRoutes = () => {
   const { isAuthenticated, userType } = useAuth();
@@ -18,7 +19,7 @@ const ProtectedRoutes = () => {
           index
           element={
             userType === "student" ? (
-              <StudentDashboard />
+              <StudentDashboardLayout />
             ) : (
               <Navigate to="/unauthorized" replace />
             )
@@ -32,7 +33,7 @@ const ProtectedRoutes = () => {
           index
           element={
             userType === "supervisor" ? (
-              <SupervisorDashboard />
+              <SupervisorDashboardLayout />
             ) : (
               <Navigate to="/unauthorized" replace />
             )

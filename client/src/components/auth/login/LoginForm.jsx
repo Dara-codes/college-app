@@ -8,10 +8,10 @@ import MiniLoader from "../../common/MiniLoader";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading ] = useState(false)
-  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const { loginUser } = useAuth()
+  const { loginUser } = useAuth();
   const {
     register,
     handleSubmit,
@@ -20,17 +20,36 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      setIsLoading(true)
-      await loginUser(data.email, data.password);
-      navigate('/')
+      setIsLoading(true);
+      const loggedInUser = await loginUser(data.email, data.password);
+
+      console.log("Logged in user:", loggedInUser);
+
+      // Redirect based on user role
+      if (
+        loggedInUser?.role === "doctoral_student" ||
+        loggedInUser?.userType === "student"
+      ) {
+        navigate("/student-dashboard", { replace: true });
+      } else if (
+        loggedInUser?.role === "supervisor" ||
+        loggedInUser?.userType === "supervisor"
+      ) {
+        navigate("/supervisor-dashboard", { replace: true });
+      } else {
+        navigate("/", { replace: true }); // fallback
+      }
     } catch (err) {
-      console.error("Login failed:", err);
-      const errorMsg = err?.response?.data?.error || 'An unexpected error occurred during login'
-      toast.error(errorMsg)
+      console.error("Login failed:", err, err?.response?.data);
+      const errorMsg =
+        err?.response?.data?.error ||
+        err?.response?.data?.message ||
+        err?.message ||
+        "An unexpected error occurred during login";
+      toast.error(errorMsg);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-    
   };
 
   return (
@@ -46,10 +65,6 @@ const LoginForm = () => {
             Email
           </label>
           <div className="relative">
-            {/* <Mail
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={20}
-            /> */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -89,10 +104,6 @@ const LoginForm = () => {
             Password
           </label>
           <div className="relative">
-            {/* <Lock
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={20} 
-            />*/}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -139,10 +150,11 @@ const LoginForm = () => {
           type="submit"
           className="w-full py-3 bg-[#0B4C77] text-white rounded-lg font-medium"
         >
-          {
-            isLoading ? (<MiniLoader loadingText={'Login'} />) : (<span>Login</span>)
-          }
-          
+          {isLoading ? (
+            <MiniLoader loadingText={"Login"} />
+          ) : (
+            <span>Login</span>
+          )}
         </button>
 
         <p className="text-center text-gray-600 text-sm">
